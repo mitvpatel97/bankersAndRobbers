@@ -1,36 +1,147 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏦 Banker & Robber 🎭
 
-## Getting Started
+A **social deduction game** for 5-10 players, inspired by Secret Hitler. One team protects the vault, the other plans the heist. Trust no one.
 
-First, run the development server:
+![Game Theme](https://img.shields.io/badge/Theme-Gilded%20Noir-gold) ![Players](https://img.shields.io/badge/Players-5--10-blue) ![Status](https://img.shields.io/badge/Status-Playable-green)
 
+---
+
+## 🎮 How to Play
+
+### The Setup
+Players are secretly divided into two teams:
+- **Bankers** (Liberals) - Protect the vault by passing Security Protocols
+- **Robbers** (Fascists) - Sabotage security and help the **Mastermind** seize power
+
+One player is the **Mastermind** (Hitler) - if elected Chancellor after 3 Heist Plans pass, the Robbers win instantly!
+
+### Winning Conditions
+| Team | Victory Condition |
+|------|-------------------|
+| 🏦 Bankers | Pass **5 Security Protocols** OR execute the Mastermind |
+| 🎭 Robbers | Pass **6 Heist Plans** OR elect the Mastermind as Chancellor (after 3 Heist Plans) |
+
+### Game Flow
+1. **Election** - President nominates a Chancellor, everyone votes
+2. **Legislative** - President draws 3 policies, discards 1. Chancellor receives 2, enacts 1
+3. **Executive Actions** - Triggered by Heist Plans (investigate, peek, execute, special election)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+
+### Installation
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/mitvpatel97/bankersAndRobbers.git
+cd bankersAndRobbers
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Running the Game
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Playing with Friends
+1. **Host** creates a game and shares the room code
+2. Players join via room code or QR scan
+3. Once 5+ players join, host starts the game
+4. Each player scans their personal QR code to access their secret role on their phone
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🎨 Features
 
-To learn more about Next.js, take a look at the following resources:
+### Dual-Screen Experience
+- **Main Display** (TV/Laptop) - Shows game board, policy tracks, election tracker
+- **Player Controllers** (Phone) - Each player's secret role and action buttons
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Anonymous Role Assignment
+Roles are automatically and secretly assigned when the game starts:
+- Robbers know each other and the Mastermind
+- Mastermind may or may not know Robbers (depends on player count)
+- Bankers know nothing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Role Distribution
+| Players | Bankers | Robbers | Mastermind |
+|---------|---------|---------|------------|
+| 5       | 3       | 1       | 1          |
+| 6       | 4       | 1       | 1          |
+| 7       | 4       | 2       | 1          |
+| 8       | 5       | 2       | 1          |
+| 9       | 5       | 3       | 1          |
+| 10      | 6       | 3       | 1          |
 
-## Deploy on Vercel
+### Executive Actions (Heist Plan Track)
+| Policy # | 5-6 Players | 7-8 Players | 9-10 Players |
+|----------|-------------|-------------|--------------|
+| 1        | -           | -           | Investigate  |
+| 2        | -           | Investigate | Investigate  |
+| 3        | Policy Peek | Special Election | Special Election |
+| 4        | Execution   | Execution   | Execution    |
+| 5        | Execution + Veto | Execution + Veto | Execution + Veto |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js 14 (App Router), React, Tailwind CSS
+- **Backend**: Node.js, Socket.io
+- **Styling**: Custom "Gilded Noir" theme with SVG assets
+- **Real-time**: WebSocket connections for live game state
+
+---
+
+## 📁 Project Structure
+
+```
+bankersAndRobbers/
+├── src/
+│   ├── app/              # Next.js pages
+│   │   ├── page.js       # Landing page
+│   │   ├── lobby/        # Lobby waiting room
+│   │   ├── game/         # Main game board
+│   │   ├── role/         # Player controller (mobile)
+│   │   └── api/          # API routes
+│   ├── components/       # React components
+│   │   ├── Lobby.jsx     # Lobby UI
+│   │   ├── GameBoard.jsx # Main game display
+│   │   ├── PlayerController.jsx # Mobile player interface
+│   │   └── GameAssets.jsx # SVG icons and assets
+│   └── lib/              # Game logic
+│       ├── gameState.mjs # Core game state machine
+│       ├── gameLogic.mjs # Role assignment, shuffle
+│       ├── gameStore.mjs # In-memory state store
+│       └── socket.js     # Socket.io client
+├── server.mjs            # Custom Node.js server with Socket.io
+└── tailwind.config.js    # Theme configuration
+```
+
+---
+
+## 🎭 Theme: Gilded Noir
+
+A cinematic heist aesthetic featuring:
+- Deep charcoal backgrounds with subtle texture
+- Gold accents for high-stakes moments
+- Security Blue (Bankers) vs Blood Red (Robbers)
+- Monospace "classified dossier" typography
+
+---
+
+## 📄 License
+
+MIT License - Feel free to fork and create your own themed version!
+
+---
+
+## 🙏 Credits
+
+Game mechanics inspired by [Secret Hitler](https://www.secrethitler.com/) - original game by Goat, Wolf, & Cabbage.
+
+Built with ❤️ using Next.js and Socket.io.

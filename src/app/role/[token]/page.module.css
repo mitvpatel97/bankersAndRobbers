@@ -1,0 +1,340 @@
+.main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.errorContainer {
+    text-align: center;
+    padding: 40px;
+    max-width: 350px;
+}
+
+.errorIcon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.errorContainer h1 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.errorContainer p {
+    color: var(--text-secondary);
+}
+
+.hint {
+    font-size: 14px;
+    margin-top: 16px;
+}
+
+/* Pre-reveal state */
+.revealContainer {
+    width: 100%;
+    max-width: 380px;
+}
+
+.cardBack {
+    background: var(--bg-card);
+    border: 2px solid var(--gold);
+    border-radius: var(--radius-xl);
+    padding: 48px 32px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.mysteryIcon {
+    font-size: 72px;
+    display: block;
+    margin-bottom: 24px;
+    animation: float 2s ease-in-out infinite;
+}
+
+.playerGreeting {
+    font-family: var(--font-display);
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.playerName {
+    color: var(--gold);
+}
+
+.tapHint {
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+}
+
+.revealButton {
+    width: 100%;
+    padding: 18px 32px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: var(--font-display);
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: #000;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    animation: glow 2s ease-in-out infinite;
+}
+
+.revealButton:hover {
+    transform: scale(1.02);
+}
+
+.revealButton:active {
+    transform: scale(0.98);
+}
+
+/* Role Card */
+.roleCard {
+    width: 100%;
+    max-width: 400px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    animation: revealIn 0.6s ease;
+}
+
+.roleCard.banker {
+    background: linear-gradient(180deg, #1e3a5f 0%, #0f172a 100%);
+    border: 2px solid var(--banker-blue);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+}
+
+.roleCard.robber {
+    background: linear-gradient(180deg, #4a1515 0%, #1a0505 100%);
+    border: 2px solid var(--crimson);
+    box-shadow: 0 0 40px rgba(220, 38, 38, 0.3);
+}
+
+.roleCard.mastermind {
+    background: linear-gradient(180deg, #3b1c5a 0%, #1a0a2e 100%);
+    border: 2px solid var(--mastermind-purple);
+    box-shadow: 0 0 40px rgba(147, 51, 234, 0.3);
+}
+
+.roleHeader {
+    padding: 32px 24px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.roleIcon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.roleTitle {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.teamBadge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.teambanker {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--banker-blue-light);
+}
+
+.teamrobber {
+    background: rgba(220, 38, 38, 0.2);
+    color: var(--crimson-light);
+}
+
+.roleBody {
+    padding: 24px;
+}
+
+.roleDescription {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.objectiveBox {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.objectiveBox h3 {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 8px;
+}
+
+.objectiveBox p {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.teamInfo {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.teamInfo h3 {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--crimson-light);
+    margin-bottom: 12px;
+}
+
+.teammateList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.teammate {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+}
+
+.teammateRole {
+    font-size: 20px;
+}
+
+.teammateName {
+    font-weight: 500;
+    flex: 1;
+}
+
+.mastermindTag {
+    font-size: 11px;
+    padding: 3px 8px;
+    background: linear-gradient(135deg, #a855f7 0%, var(--mastermind-purple) 100%);
+    color: white;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.warningBox {
+    background: rgba(234, 179, 8, 0.1);
+    border: 1px solid rgba(234, 179, 8, 0.3);
+    border-radius: var(--radius-md);
+    padding: 16px;
+}
+
+.warningBox h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fbbf24;
+    margin-bottom: 8px;
+}
+
+.warningBox p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.footer {
+    padding: 20px 24px;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.secretWarning {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes revealIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) rotateY(10deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) rotateY(0);
+    }
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
+    }
+}

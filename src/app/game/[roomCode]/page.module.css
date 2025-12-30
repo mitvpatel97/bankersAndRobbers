@@ -1,0 +1,189 @@
+.main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 1000px;
+    animation: fadeIn 0.5s ease;
+}
+
+.header {
+    text-align: center;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-top: 12px;
+    font-size: 18px;
+}
+
+.qrGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.qrCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.qrCard:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+    box-shadow: var(--glow-gold);
+}
+
+.qrImage {
+    width: 180px;
+    height: 180px;
+    border-radius: var(--radius-md);
+}
+
+.qrPlaceholder {
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.playerInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+}
+
+.playerName {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.instructions {
+    width: 100%;
+    max-width: 500px;
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.instructions h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.instructions ol {
+    text-align: left;
+    margin: 0 auto;
+    padding-left: 24px;
+    max-width: 300px;
+}
+
+.instructions li {
+    padding: 6px 0;
+    color: var(--text-secondary);
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 60px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.errorContainer {
+    text-align: center;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 640px) {
+    .qrGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .qrCard {
+        padding: 16px;
+    }
+
+    .qrImage {
+        width: 140px;
+        height: 140px;
+    }
+
+    .qrPlaceholder {
+        width: 140px;
+        height: 140px;
+    }
+
+    .playerName {
+        font-size: 14px;
+    }
+}
