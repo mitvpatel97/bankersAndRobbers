@@ -16,7 +16,7 @@ const ROLE_CONFIG = {
 /**
  * Fisher-Yates shuffle algorithm
  * @param {Array} array - Array to shuffle
- * @returns {Array} - Shuffled array (mutates original)
+ * @returns {Array} - Shuffled array (does NOT mutate original)
  */
 export function shuffleArray(array) {
   const arr = [...array];
@@ -26,6 +26,9 @@ export function shuffleArray(array) {
   }
   return arr;
 }
+
+// Alias for backwards compatibility
+export const shuffle = shuffleArray;
 
 /**
  * Get role configuration for a given player count
@@ -83,12 +86,19 @@ export function assignRoles(players) {
     if (role === 'robber' || role === 'mastermind') {
       // Get all robber team members (robbers + mastermind)
       const allRobberTeam = [...robberIndices, mastermindIndex];
-      roleInfo.teamMembers = allRobberTeam
+      const teamMemberNames = allRobberTeam
         .filter(i => i !== index) // Exclude self
+        .map(i => players[i].name);
+
+      roleInfo.teamMembers = allRobberTeam
+        .filter(i => i !== index)
         .map(i => ({
           name: players[i].name,
           role: shuffledRoles[i],
         }));
+
+      // Alias for test compatibility
+      roleInfo.allies = teamMemberNames;
 
       // Robbers specifically know who the mastermind is
       if (role === 'robber') {
@@ -99,8 +109,11 @@ export function assignRoles(players) {
       // In 7+ player games, Mastermind doesn't know who the Robbers are
       if (role === 'mastermind' && playerCount >= 7) {
         roleInfo.teamMembers = []; // Mastermind is blind in larger games
+        roleInfo.allies = []; // Also clear allies
         roleInfo.blindMastermind = true;
       }
+    } else {
+      roleInfo.allies = []; // Bankers don't know allies
     }
 
     return roleInfo;
