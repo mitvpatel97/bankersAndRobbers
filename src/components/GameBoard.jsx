@@ -1,10 +1,10 @@
-'use client'; // GameBoard.jsx
+'use client';
 
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
-import { BankerIcon, RobberIcon, MastermindIcon, NoiseOverlay } from './GameAssets';
-import { ScrollText, Eye, Skull, Vote, RefreshCw, Search } from 'lucide-react';
+import { BankerIcon, RobberIcon, MastermindIcon, NoiseOverlay, CitySkyline, VHSOverlay, GlowingOrb, ShieldIcon } from './GameAssets';
+import { ScrollText, Eye, Skull, Vote, Search, Zap, AlertTriangle, Trophy } from 'lucide-react';
 
 export default function GameBoard({ game }) {
     const logContainerRef = useRef(null);
@@ -16,221 +16,317 @@ export default function GameBoard({ game }) {
         }
     }, [game.logs]);
 
-    // Helpers for Policy Track Icons
+    // Get executive power icon for robber track slots
     const getRobberPowerIcon = (slotIdx, playerCount) => {
-        // Slot indices are 0-5 (for 1st to 6th policy)
-        // Standard SH Rules:
-        // 5-6 Players: 3: Peek, 4: Kill, 5: Kill + Veto
-        // 7-8 Players: 2: Investigate, 3: Elect, 4: Kill, 5: Kill + Veto
-        // 9-10 Players: 1: Investigate, 2: Investigate, 3: Elect, 4: Kill, 5: Kill + Veto
+        const count = slotIdx + 1;
 
-        const count = slotIdx + 1; // 1-based count for logic checks
-
-        if (count === 6) return <RobberIcon className="w-6 h-6 text-black" />; // Win slot
+        if (count === 6) return <RobberIcon className="w-6 h-6 text-midnight" />;
 
         if (playerCount <= 6) {
-            if (count === 3) return <Eye className="w-5 h-5 text-black" />;
-            if (count === 4) return <Skull className="w-5 h-5 text-black" />;
-            if (count === 5) return <Skull className="w-5 h-5 text-black" />;
+            if (count === 3) return <Eye className="w-5 h-5 text-midnight" />;
+            if (count === 4) return <Skull className="w-5 h-5 text-midnight" />;
+            if (count === 5) return <Skull className="w-5 h-5 text-midnight" />;
         } else if (playerCount <= 8) {
-            if (count === 2) return <Search className="w-5 h-5 text-black" />; // Investigate
-            if (count === 3) return <Vote className="w-5 h-5 text-black" />; // Special Election
-            if (count === 4) return <Skull className="w-5 h-5 text-black" />;
-            if (count === 5) return <Skull className="w-5 h-5 text-black" />;
+            if (count === 2) return <Search className="w-5 h-5 text-midnight" />;
+            if (count === 3) return <Vote className="w-5 h-5 text-midnight" />;
+            if (count === 4) return <Skull className="w-5 h-5 text-midnight" />;
+            if (count === 5) return <Skull className="w-5 h-5 text-midnight" />;
         } else {
-            if (count === 1) return <Search className="w-5 h-5 text-black" />;
-            if (count === 2) return <Search className="w-5 h-5 text-black" />;
-            if (count === 3) return <Vote className="w-5 h-5 text-black" />;
-            if (count === 4) return <Skull className="w-5 h-5 text-black" />;
-            if (count === 5) return <Skull className="w-5 h-5 text-black" />;
+            if (count === 1) return <Search className="w-5 h-5 text-midnight" />;
+            if (count === 2) return <Search className="w-5 h-5 text-midnight" />;
+            if (count === 3) return <Vote className="w-5 h-5 text-midnight" />;
+            if (count === 4) return <Skull className="w-5 h-5 text-midnight" />;
+            if (count === 5) return <Skull className="w-5 h-5 text-midnight" />;
         }
         return null;
     };
 
-    return (
-        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+    // Game Over Screen
+    if (game.status === 'GAME_OVER') {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+                <VHSOverlay />
+                <div className="fixed inset-0 z-0">
+                    <CitySkyline className="absolute bottom-0 left-0 right-0 h-[60%] opacity-30" />
+                    <GlowingOrb color={game.winner === 'banker' ? 'cyan' : 'pink'} size="xl" className="absolute top-1/4 left-1/2 -translate-x-1/2" />
+                </div>
 
-            {/* LEFT: Game Status & Tracks */}
-            <div className="lg:col-span-8 space-y-8">
+                <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="relative z-10 text-center space-y-8 max-w-2xl"
+                >
+                    <Trophy className={clsx(
+                        "w-24 h-24 mx-auto",
+                        game.winner === 'banker' ? "text-banker glow-cyan" : "text-robber glow-pink"
+                    )} />
 
-                {/* Header Info */}
-                <div className="flex items-center justify-between bg-black/40 border-y border-white/10 p-4 backdrop-blur-sm">
-                    <div className="flex items-center gap-4">
-                        <div className="p-2 bg-white/5 rounded border border-white/10">
-                            <span className="text-xs text-text-muted uppercase tracking-widest block">Room ID</span>
-                            <span className="text-xl font-mono text-gold font-bold tracking-widest">{game.roomCode}</span>
+                    <h1 className={clsx(
+                        "text-6xl font-display font-bold tracking-widest",
+                        game.winner === 'banker' ? "neon-text-cyan" : "neon-text-pink"
+                    )}>
+                        {game.winner === 'banker' ? 'VAULT SECURED' : 'HEIST COMPLETE'}
+                    </h1>
+
+                    <p className="text-2xl font-mono text-text-secondary tracking-wider">
+                        {game.winReason}
+                    </p>
+
+                    <div className="pt-8 border-t border-white/10">
+                        <p className="text-sm font-mono text-text-muted uppercase tracking-widest mb-4">Final Score</p>
+                        <div className="flex justify-center gap-8">
+                            <div className="text-center">
+                                <div className="text-4xl font-bold text-banker neon-text-cyan">{game.policies.banker}</div>
+                                <div className="text-xs text-text-muted font-mono mt-1">SECURITY</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-4xl font-bold text-robber neon-text-pink">{game.policies.robber}</div>
+                                <div className="text-xs text-text-muted font-mono mt-1">HEIST</div>
+                            </div>
                         </div>
-                        <div className="h-10 w-px bg-white/10" />
-                        <div>
-                            <span className="text-xs text-text-muted uppercase tracking-widest block">Status</span>
-                            <span className="text-sm font-display text-white tracking-wider flex items-center gap-2">
-                                {game.status === 'LOBBY' && 'WAITING FOR SIGNAL'}
-                                {game.status === 'ELECTION' && 'ELECTION CYCLES'}
-                                {game.status === 'LEGISLATIVE' && 'LEGISLATIVE SESSION'}
-                                {game.status === 'EXECUTIVE' && 'EXECUTIVE ACTION REQUIRED'}
-                                {game.status === 'GAME_OVER' && 'MISSION CONCLUDED'}
+                    </div>
+                </motion.div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen p-6 relative overflow-hidden">
+            {/* Background */}
+            <VHSOverlay />
+            <div className="fixed inset-0 z-0">
+                <CitySkyline className="absolute bottom-0 left-0 right-0 h-[40%] opacity-25" />
+                <GlowingOrb color="pink" size="lg" className="absolute top-20 left-10" />
+                <GlowingOrb color="cyan" size="xl" className="absolute bottom-40 right-20" />
+            </div>
+            <NoiseOverlay />
+
+            <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
+
+                {/* LEFT: Game Status & Tracks */}
+                <div className="lg:col-span-8 space-y-6">
+
+                    {/* Header Info */}
+                    <div className="card-noir p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-6">
+                            <div className="bg-midnight/60 border border-gold/30 px-4 py-2">
+                                <span className="text-[10px] text-text-muted uppercase tracking-widest block font-mono">Operation</span>
+                                <span className="text-xl font-mono text-gold font-bold tracking-[0.2em] neon-text-orange">{game.roomCode}</span>
+                            </div>
+                            <div className="h-10 w-px bg-white/10" />
+                            <div>
+                                <span className="text-[10px] text-text-muted uppercase tracking-widest block font-mono">Phase</span>
+                                <span className="text-sm font-display text-text-primary tracking-wider flex items-center gap-2">
+                                    {game.status === 'LOBBY' && <><Zap className="w-4 h-4 text-gold" /> STANDBY</>}
+                                    {game.status === 'ELECTION' && <><Vote className="w-4 h-4 text-banker" /> ELECTION</>}
+                                    {game.status === 'LEGISLATIVE' && <><ScrollText className="w-4 h-4 text-gold" /> LEGISLATION</>}
+                                    {game.status === 'EXECUTIVE' && <><AlertTriangle className="w-4 h-4 text-robber" /> EXECUTIVE</>}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Current President */}
+                        <div className="text-right">
+                            <span className="text-[10px] text-text-muted uppercase tracking-widest block font-mono">President</span>
+                            <span className="text-lg font-display text-banker neon-text-cyan">
+                                {game.players[game.presidentIdx]?.name || "—"}
                             </span>
                         </div>
                     </div>
-                </div>
 
-                {/* BANKER TRACK (Liberal) */}
-                <div className="relative">
-                    <div className="flex items-center gap-2 mb-2">
-                        <BankerIcon className="w-6 h-6 text-banker" />
-                        <h2 className="text-lg font-display text-banker tracking-[0.2em] uppercase">Security Protocol</h2>
-                    </div>
+                    {/* BANKER TRACK (Security Protocols) */}
+                    <div className="card-noir p-6 relative overflow-hidden">
+                        {/* Top accent line */}
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-banker to-transparent" />
 
-                    {/* Track Container */}
-                    <div className="bg-surface border border-banker/30 p-1 rounded-sm shadow-[0_0_20px_rgba(37,99,235,0.1)] relative overflow-hidden">
-                        <div className="absolute inset-0 bg-banker/5" />
-                        <div className="grid grid-cols-5 gap-1 relative z-10">
+                        <div className="flex items-center gap-3 mb-4">
+                            <BankerIcon className="w-8 h-8 text-banker glow-cyan" />
+                            <h2 className="text-lg font-display text-banker tracking-[0.15em] uppercase neon-text-cyan">
+                                Security Protocol
+                            </h2>
+                            <span className="ml-auto text-xs font-mono text-banker/60">5 TO WIN</span>
+                        </div>
+
+                        {/* Track */}
+                        <div className="grid grid-cols-5 gap-2">
                             {[...Array(5)].map((_, i) => (
-                                <div
+                                <motion.div
                                     key={i}
+                                    initial={false}
+                                    animate={{
+                                        scale: i < game.policies.banker ? 1 : 0.95,
+                                        opacity: i < game.policies.banker ? 1 : 0.4,
+                                    }}
                                     className={clsx(
-                                        "aspect-[3/4] rounded-sm flex items-center justify-center border transition-all duration-500",
+                                        "aspect-[3/4] flex items-center justify-center border-2 transition-all duration-500 relative",
                                         i < game.policies.banker
-                                            ? "bg-banker border-banker shadow-[0_0_15px_rgba(37,99,235,0.6)]"
-                                            : "bg-[#1a1a1a] border-white/5 border-dashed"
+                                            ? "bg-banker border-banker shadow-neon-cyan"
+                                            : "bg-surface border-banker/20 border-dashed"
                                     )}
                                 >
                                     {i < game.policies.banker ? (
-                                        <BankerIcon className="w-12 h-12 text-white/90 drop-shadow-md pb-1" />
+                                        <ShieldIcon className="w-12 h-12 text-midnight" />
                                     ) : (
-                                        <span className="text-banker/10 font-mono text-4xl font-bold">{i + 1}</span>
+                                        <span className="text-banker/20 font-mono text-3xl font-bold">{i + 1}</span>
                                     )}
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
                     </div>
-                    {/* Win Marker */}
-                    <div className="absolute -right-2 top-1/2 -translate-y-1/2 translate-x-full text-banker text-xs font-mono uppercase tracking-widest rotate-90 origin-left opacity-50">
-                        Victory
-                    </div>
-                </div>
 
-                {/* ROBBER TRACK (Fascist) */}
-                <div className="relative">
-                    <div className="flex items-center gap-2 mb-2">
-                        <RobberIcon className="w-6 h-6 text-robber" />
-                        <h2 className="text-lg font-display text-robber tracking-[0.2em] uppercase">The Heist Plan</h2>
-                    </div>
+                    {/* ROBBER TRACK (Heist Plans) */}
+                    <div className="card-noir p-6 relative overflow-hidden">
+                        {/* Top accent line */}
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-robber to-transparent" />
 
-                    {/* Track Container */}
-                    <div className="bg-surface border border-robber/30 p-1 rounded-sm shadow-[0_0_20px_rgba(220,38,38,0.1)] relative overflow-hidden">
-                        <div className="absolute inset-0 bg-robber/5" />
-                        <div className="grid grid-cols-6 gap-1 relative z-10">
+                        <div className="flex items-center gap-3 mb-4">
+                            <RobberIcon className="w-8 h-8 text-robber glow-pink" />
+                            <h2 className="text-lg font-display text-robber tracking-[0.15em] uppercase neon-text-pink">
+                                The Heist Plan
+                            </h2>
+                            <span className="ml-auto text-xs font-mono text-robber/60">6 TO WIN</span>
+                        </div>
+
+                        {/* Track */}
+                        <div className="grid grid-cols-6 gap-2">
                             {[...Array(6)].map((_, i) => (
-                                <div
+                                <motion.div
                                     key={i}
+                                    initial={false}
+                                    animate={{
+                                        scale: i < game.policies.robber ? 1 : 0.95,
+                                        opacity: i < game.policies.robber ? 1 : 0.4,
+                                    }}
                                     className={clsx(
-                                        "aspect-[3/4] rounded-sm flex items-center justify-center border transition-all duration-500 relative ring-offset-0",
-                                        // Specific styling for Danger Zones (Executive Actions)
-                                        (i >= 2 && game.players.length <= 8) || (i >= 0 && game.players.length > 8) // Simplified logic check logic visualization
-                                            ? "bg-[#1f1a1a]"
-                                            : "bg-[#1a1a1a]",
+                                        "aspect-[3/4] flex flex-col items-center justify-center border-2 transition-all duration-500 relative",
                                         i < game.policies.robber
-                                            ? "bg-robber border-robber shadow-[0_0_15px_rgba(220,38,38,0.6)]"
-                                            : "border-white/5 border-dashed"
+                                            ? "bg-robber border-robber shadow-neon-pink"
+                                            : "bg-surface border-robber/20 border-dashed"
                                     )}
                                 >
                                     {i < game.policies.robber ? (
-                                        <RobberIcon className="w-12 h-12 text-black/80 drop-shadow-md pb-1" />
+                                        <RobberIcon className="w-10 h-10 text-midnight" />
                                     ) : (
-                                        <div className="flex flex-col items-center gap-1 opacity-40">
-                                            {/* Power-up Icons */}
+                                        <div className="flex flex-col items-center">
                                             {getRobberPowerIcon(i, game.players.length) || (
-                                                <span className="text-robber/20 font-mono text-4xl font-bold">{i + 1}</span>
+                                                <span className="text-robber/20 font-mono text-3xl font-bold">{i + 1}</span>
                                             )}
                                         </div>
                                     )}
 
-                                    {/* Slot Label (e.g. "VETO") */}
-                                    {i === 4 && <span className="absolute bottom-1 text-[8px] font-bold text-white/30 uppercase tracking-widest">Veto</span>}
-                                </div>
+                                    {/* Veto label */}
+                                    {i === 4 && (
+                                        <span className="absolute bottom-1 text-[8px] font-bold text-white/30 uppercase tracking-widest">
+                                            Veto
+                                        </span>
+                                    )}
+                                </motion.div>
                             ))}
+                        </div>
+                    </div>
+
+                    {/* CHAOS METER (Election Tracker) */}
+                    <div className="card-noir p-4">
+                        <div className="flex items-center justify-center gap-8">
+                            <span className="text-xs font-mono text-text-muted uppercase tracking-[0.2em]">Chaos Meter</span>
+                            <div className="flex items-center gap-4">
+                                {[0, 1, 2, 3].map((stage) => (
+                                    <div key={stage} className="relative">
+                                        <motion.div
+                                            animate={{
+                                                scale: game.electionTracker > stage ? 1.2 : 1,
+                                            }}
+                                            className={clsx(
+                                                "w-5 h-5 rounded-full border-2 transition-all duration-300",
+                                                stage === 3
+                                                    ? "border-robber"
+                                                    : "border-white/20",
+                                                game.electionTracker > stage
+                                                    ? "bg-robber border-robber shadow-neon-pink"
+                                                    : "bg-transparent"
+                                            )}
+                                        />
+                                        {stage === 3 && (
+                                            <div className="absolute top-8 left-1/2 -translate-x-1/2 text-[9px] text-robber uppercase tracking-widest whitespace-nowrap font-mono">
+                                                CHAOS
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* ELECTION TRACKER */}
-                <div className="flex items-center justify-center gap-6 pt-4 bg-black/20 p-4 rounded border border-white/5">
-                    <span className="text-xs font-mono text-text-muted uppercase tracking-widest">Chaos Meter</span>
-                    <div className="flex items-center gap-4">
-                        {[0, 1, 2, 3].map((stage) => (
-                            <div key={stage} className="relative">
-                                <div
-                                    className={clsx(
-                                        "w-4 h-4 rounded-full border transition-all duration-300",
-                                        stage === 3 // The Chaos Token
-                                            ? "border-robber bg-transparent"
-                                            : "border-white/20 bg-transparent",
-                                        game.electionTracker > stage
-                                            ? "bg-blue-500 border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]"
-                                            : ""
-                                    )}
-                                />
-                                {stage === 3 && (
-                                    <div className="absolute top-6 left-1/2 -translate-x-1/2 text-[9px] text-robber uppercase tracking-widest whitespace-nowrap">
-                                        CHAOS
-                                    </div>
-                                )}
+                {/* RIGHT: Mission Log */}
+                <div className="lg:col-span-4 flex flex-col h-full min-h-[600px] card-noir relative overflow-hidden">
+                    {/* Top accent line */}
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent" />
+
+                    <div className="p-4 border-b border-white/10 flex items-center gap-3">
+                        <ScrollText className="w-5 h-5 text-gold" />
+                        <h3 className="text-sm font-display text-gold tracking-[0.2em] uppercase neon-text-orange">Mission Log</h3>
+                    </div>
+
+                    <div
+                        ref={logContainerRef}
+                        className="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-xs text-text-secondary custom-scrollbar"
+                    >
+                        <AnimatePresence>
+                            {game.logs.map((log, i) => {
+                                const match = log.match(/\[(.*?)\] (.*)/);
+                                const time = match ? match[1] : '';
+                                const msg = match ? match[2] : log;
+
+                                return (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className="flex gap-3"
+                                    >
+                                        <span className="text-text-muted/40 shrink-0">{time}</span>
+                                        <span className={clsx(
+                                            msg.includes('Banker') && "text-banker",
+                                            msg.includes('Robber') && "text-robber",
+                                            msg.includes('GAME OVER') && "text-gold font-bold neon-text-orange",
+                                            msg.includes('executed') && "text-robber",
+                                            msg.includes('President') && "text-banker",
+                                            msg.includes('Chancellor') && "text-gold"
+                                        )}>
+                                            {msg}
+                                        </span>
+                                    </motion.div>
+                                );
+                            })}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Active President Card */}
+                    <div className="p-4 border-t border-white/10 bg-midnight/30">
+                        <div className="flex items-center justify-between text-xs text-text-muted font-mono mb-2">
+                            <span className="uppercase tracking-widest">Current Turn</span>
+                            <div className="w-2 h-2 rounded-full bg-banker animate-pulse" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-[10px] text-text-muted font-mono uppercase">President</p>
+                                <p className="text-lg font-display text-banker tracking-wider">
+                                    {game.players[game.presidentIdx]?.name || "—"}
+                                </p>
                             </div>
-                        ))}
+                            {game.chancellorId && (
+                                <div className="text-right">
+                                    <p className="text-[10px] text-text-muted font-mono uppercase">Chancellor</p>
+                                    <p className="text-lg font-display text-gold tracking-wider">
+                                        {game.players.find(p => p.id === game.chancellorId)?.name || "—"}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
-
-            </div>
-
-            {/* RIGHT: Game Log & Intel */}
-            <div className="lg:col-span-4 flex flex-col h-full min-h-[500px] bg-black/60 border-l border-white/10 backdrop-blur-md">
-                <div className="p-4 border-b border-white/10 flex items-center gap-2">
-                    <ScrollText className="w-4 h-4 text-gold" />
-                    <h3 className="text-sm font-display text-gold tracking-[0.2em] uppercase">Mission Log</h3>
-                </div>
-
-                <div
-                    ref={logContainerRef}
-                    className="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-xs text-text-secondary custom-scrollbar"
-                >
-                    {game.logs.map((log, i) => {
-                        // Extract timestamp and message
-                        const match = log.match(/\[(.*?)\] (.*)/);
-                        const time = match ? match[1] : '';
-                        const msg = match ? match[2] : log;
-
-                        return (
-                            <div key={i} className="flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <span className="text-white/20 shrink-0">{time}</span>
-                                <span className={clsx(
-                                    msg.includes('Banker') && "text-banker",
-                                    msg.includes('Robber') && "text-robber",
-                                    msg.includes('GAME OVER') && "text-gold font-bold",
-                                    msg.includes('executed') && "text-red-500"
-                                )}>
-                                    {msg}
-                                </span>
-                            </div>
-                        );
-                    })}
-                </div>
-
-                {/* Active Role Card (Status Indicator) */}
-                <div className="p-4 border-t border-white/10 bg-white/5">
-                    <div className="flex items-center justify-between text-xs text-text-muted font-mono mb-2">
-                        <span>CURRENT PRESIDENT</span>
-                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                    </div>
-                    {/* Placeholder for current turn logic display if needed */}
-                    <div className="text-white font-display text-lg tracking-widest">
-                        {game.players[game.presidentIdx]?.name || "None"}
-                    </div>
-                </div>
-
             </div>
         </div>
     );
 }
-
-

@@ -1,11 +1,11 @@
-'use client'; // Lobby.jsx
+'use client';
 
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Users, Lock, Unlock, Play, AlertTriangle, Check } from 'lucide-react';
+import { Copy, Users, Lock, Play, Check, Radio } from 'lucide-react';
 import clsx from 'clsx';
-import { BankerIcon, RobberIcon, NoiseOverlay } from './GameAssets';
+import { BankerIcon, RobberIcon, NoiseOverlay, CitySkyline, VHSOverlay, GlowingOrb } from './GameAssets';
 
 export default function Lobby({ roomCode, players, isHost, onStartGame }) {
     const [copied, setCopied] = useState(false);
@@ -17,7 +17,7 @@ export default function Lobby({ roomCode, players, isHost, onStartGame }) {
             QRCode.toDataURL(url, {
                 width: 256,
                 margin: 0,
-                color: { dark: '#0a0a0a', light: '#d97706' }, // Black on Gold
+                color: { dark: '#0d0221', light: '#ff9d00' }, // Midnight purple on neon orange
             }).then(setQrDataUrl);
         }
     }, [roomCode]);
@@ -29,133 +29,192 @@ export default function Lobby({ roomCode, players, isHost, onStartGame }) {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
-            <NoiseOverlay />
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+            {/* VHS Effect */}
+            <VHSOverlay />
 
-            {/* Ambient Glows */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-banker/10 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-robber/10 rounded-full blur-[120px]" />
+            {/* Background Elements */}
+            <div className="fixed inset-0 z-0">
+                <CitySkyline className="absolute bottom-0 left-0 right-0 h-[50%] opacity-40" />
+                <GlowingOrb color="pink" size="lg" className="absolute top-10 left-10" />
+                <GlowingOrb color="cyan" size="xl" className="absolute bottom-20 right-10" />
+                <GlowingOrb color="orange" size="md" className="absolute top-1/2 left-1/3" />
             </div>
+
+            <NoiseOverlay />
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="relative z-10 w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8"
             >
-                {/* Visual Panel */}
-                <div className="bg-surface/90 backdrop-blur-md border border-white/5 rounded-none shadow-2xl relative overflow-hidden flex flex-col items-center justify-center p-12 text-center group">
-                    <div className="absolute inset-0 border border-gold/10 m-2 pointer-events-none" />
+                {/* Visual Panel - Left */}
+                <div className="card-noir backdrop-blur-xl p-10 relative overflow-hidden flex flex-col items-center justify-center text-center">
+                    {/* Top neon line */}
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-pink to-transparent" />
 
+                    {/* Icons */}
                     <div className="relative mb-8">
-                        <div className="absolute inset-0 bg-gold/20 blur-3xl rounded-full" />
-                        <div className="flex items-center justify-center gap-6 relative z-10">
-                            <BankerIcon className="w-24 h-24 text-banker drop-shadow-[0_0_15px_rgba(37,99,235,0.5)]" />
-                            <div className="w-px h-24 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-                            <RobberIcon className="w-24 h-24 text-robber drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
+                        <div className="flex items-center justify-center gap-8 relative z-10">
+                            <BankerIcon className="w-20 h-20 text-banker glow-cyan animate-float" />
+                            <div className="w-px h-20 bg-gradient-to-b from-transparent via-gold to-transparent" />
+                            <RobberIcon className="w-20 h-20 text-robber glow-pink animate-float animation-delay-500" />
                         </div>
                     </div>
 
-                    <h1 className="text-5xl font-display font-bold text-white tracking-widest mb-2">
-                        BANKER <span className="text-gold">&</span> ROBBER
+                    <h1 className="text-4xl font-display font-bold tracking-[0.2em] mb-2">
+                        <span className="text-banker neon-text-cyan">BANKER</span>
+                        <span className="text-gold mx-3">&</span>
+                        <span className="text-robber neon-text-pink">ROBBER</span>
                     </h1>
-                    <p className="text-text-secondary font-mono text-sm tracking-widest uppercase mb-10">
-                        High Stakes Social Deduction
+                    <p className="text-text-secondary font-mono text-sm tracking-[0.3em] uppercase mb-10">
+                        Midnight Social Deduction
                     </p>
 
                     {/* Room Code Display */}
-                    <div className="w-full max-w-xs relative group/code cursor-pointer" onClick={handleCopy}>
-                        <div className="absolute inset-0 bg-gold/5 blur-lg opacity-0 group-hover/code:opacity-100 transition-opacity" />
-                        <div className="bg-black/50 border border-white/10 hover:border-gold/50 transition-colors p-6 flex flex-col items-center gap-2 relative">
-                            <span className="text-xs uppercase tracking-widest text-text-muted">Operation Code</span>
+                    <div className="w-full max-w-xs relative group cursor-pointer" onClick={handleCopy}>
+                        <div className="bg-midnight/80 border-2 border-gold/30 hover:border-gold transition-all p-6 flex flex-col items-center gap-3 relative overflow-hidden">
+                            {/* Scanline effect */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gold/5 to-transparent animate-scanline" />
+
+                            <span className="text-xs uppercase tracking-[0.4em] text-text-muted font-mono">Operation Code</span>
                             <div className="flex items-center gap-4">
-                                <span className="text-4xl font-mono font-bold text-gold tracking-[0.2em]">{roomCode}</span>
-                                {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5 text-text-secondary" />}
+                                <span className="text-4xl font-mono font-bold text-gold tracking-[0.3em] neon-text-orange">{roomCode}</span>
+                                {copied ? <Check className="w-5 h-5 text-banker" /> : <Copy className="w-5 h-5 text-text-secondary group-hover:text-gold transition-colors" />}
                             </div>
+                            <span className="text-[10px] text-text-muted font-mono opacity-0 group-hover:opacity-100 transition-opacity">
+                                Click to copy
+                            </span>
                         </div>
                     </div>
+
+                    {/* Decorative corner elements */}
+                    <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-robber/30" />
+                    <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-banker/30" />
+                    <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-banker/30" />
+                    <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-robber/30" />
                 </div>
 
-                {/* Operations Panel */}
-                <div className="bg-surface/90 backdrop-blur-md border border-white/5 rounded-none shadow-2xl flex flex-col p-8 relative">
-                    <div className="absolute inset-0 border border-white/5 m-2 pointer-events-none" />
+                {/* Operations Panel - Right */}
+                <div className="card-noir backdrop-blur-xl flex flex-col p-8 relative overflow-hidden">
+                    {/* Top neon line */}
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-banker to-transparent" />
 
-                    <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
-                        <h2 className="text-xl font-display text-text-primary tracking-widest flex items-center gap-2">
-                            <Users className="w-4 h-4 text-gold" />
+                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                        <h2 className="text-lg font-display text-text-primary tracking-[0.2em] flex items-center gap-3">
+                            <Users className="w-5 h-5 text-gold" />
                             CREW MANIFEST
                         </h2>
                         <span className={clsx(
-                            "font-mono text-xs px-2 py-1 rounded",
-                            players.length >= 5 ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"
+                            "font-mono text-xs px-3 py-1.5 border",
+                            players.length >= 5
+                                ? "border-banker/50 text-banker bg-banker/10"
+                                : "border-robber/50 text-robber bg-robber/10"
                         )}>
                             {players.length} / 10 RECRUITED
                         </span>
                     </div>
 
-                    <div className="flex-1 space-y-2 mb-8 overflow-y-auto pr-2 custom-scrollbar min-h-[300px]">
+                    <div className="flex-1 space-y-2 mb-6 overflow-y-auto pr-2 custom-scrollbar min-h-[280px]">
                         <AnimatePresence>
-                            {players.map((p) => (
+                            {players.map((p, idx) => (
                                 <motion.div
                                     key={p.id}
-                                    initial={{ opacity: 0, x: 20 }}
+                                    initial={{ opacity: 0, x: 30 }}
                                     animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: idx * 0.1 }}
                                     className={clsx(
-                                        "p-3 border flex items-center justify-between group",
+                                        "p-4 border flex items-center justify-between group transition-all",
                                         p.isHost
-                                            ? "bg-gold/5 border-gold/20"
-                                            : "bg-white/5 border-white/5"
+                                            ? "bg-gold/5 border-gold/30 hover:border-gold/50"
+                                            : "bg-white/5 border-white/10 hover:border-banker/30"
                                     )}
                                 >
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-4">
                                         <div className={clsx(
-                                            "w-8 h-8 flex items-center justify-center font-bold font-mono text-sm border",
-                                            p.isHost ? "bg-gold text-black border-gold" : "bg-transparent text-text-secondary border-white/20"
+                                            "w-10 h-10 flex items-center justify-center font-bold font-mono text-sm border-2",
+                                            p.isHost
+                                                ? "bg-gold text-midnight border-gold"
+                                                : "bg-surface-light text-text-secondary border-white/20"
                                         )}>
-                                            {p.name[0]}
+                                            {p.name[0].toUpperCase()}
                                         </div>
                                         <div>
-                                            <p className={clsx("font-bold font-mono text-sm", p.isHost ? "text-gold" : "text-text-primary")}>
+                                            <p className={clsx("font-bold font-mono", p.isHost ? "text-gold" : "text-text-primary")}>
                                                 {p.name}
                                             </p>
+                                            {p.isHost && (
+                                                <p className="text-[10px] text-gold/60 font-mono uppercase tracking-widest">Mastermind</p>
+                                            )}
                                         </div>
                                     </div>
-                                    {p.isHost && <span className="text-[10px] uppercase font-bold tracking-widest text-gold opacity-50">Boss</span>}
+                                    {p.isHost && (
+                                        <div className="flex items-center gap-2">
+                                            <Radio className="w-3 h-3 text-gold animate-pulse" />
+                                            <span className="text-[10px] uppercase font-bold tracking-widest text-gold">HOST</span>
+                                        </div>
+                                    )}
                                 </motion.div>
                             ))}
                         </AnimatePresence>
+
                         {/* Empty Slots */}
                         {[...Array(Math.max(0, 5 - players.length))].map((_, i) => (
-                            <div key={i} className="p-3 border border-white/5 border-dashed flex items-center justify-center text-white/10 font-mono text-xs tracking-widest">
-                                OPEN SLOT
+                            <div
+                                key={`empty-${i}`}
+                                className="p-4 border border-dashed border-white/10 flex items-center justify-center text-text-muted/30 font-mono text-xs tracking-[0.3em]"
+                            >
+                                AWAITING OPERATIVE
                             </div>
                         ))}
                     </div>
 
+                    {/* Start Button or Waiting Message */}
                     {isHost ? (
                         <button
                             onClick={onStartGame}
                             disabled={players.length < 5}
                             className={clsx(
-                                "w-full py-5 font-display font-bold text-lg tracking-widest uppercase transition-all flex items-center justify-center gap-3",
+                                "w-full py-5 font-display font-bold text-lg tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-3 border-2",
                                 players.length >= 5
-                                    ? "bg-gold text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(217,119,6,0.3)]"
-                                    : "bg-white/5 text-text-muted cursor-not-allowed border border-white/5"
+                                    ? "bg-gradient-to-r from-robber to-neon-purple border-robber text-white hover:shadow-neon-pink"
+                                    : "bg-surface border-white/10 text-text-muted cursor-not-allowed"
                             )}
                         >
-                            {players.length >= 5 ? <>BEGIN HEIST <Play className="w-4 h-4 fill-current" /></> : <>WAITING FOR CREW <Lock className="w-4 h-4" /></>}
+                            {players.length >= 5 ? (
+                                <>
+                                    <Play className="w-5 h-5 fill-current" />
+                                    COMMENCE HEIST
+                                </>
+                            ) : (
+                                <>
+                                    <Lock className="w-5 h-5" />
+                                    NEED {5 - players.length} MORE
+                                </>
+                            )}
                         </button>
                     ) : (
-                        <div className="p-4 bg-black/30 border border-white/5 text-center">
-                            <p className="text-text-muted text-xs font-mono animate-pulse tracking-widest">AWAITING SIGNAL FROM BOSS...</p>
+                        <div className="p-5 bg-midnight/50 border border-white/10 text-center">
+                            <div className="flex items-center justify-center gap-3 text-text-muted font-mono text-sm tracking-widest">
+                                <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+                                AWAITING HOST SIGNAL
+                                <div className="w-2 h-2 rounded-full bg-gold animate-pulse animation-delay-500" />
+                            </div>
                         </div>
                     )}
 
-                    {/* Mobile Join QR Display Alternative */}
-                    <div className="mt-4 pt-4 border-t border-white/10 text-center">
-                        <div className="text-[10px] text-text-muted uppercase tracking-widest mb-2">Mobile Link</div>
+                    {/* QR Code */}
+                    <div className="mt-6 pt-6 border-t border-white/10 text-center">
+                        <div className="text-[10px] text-text-muted uppercase tracking-[0.3em] mb-3 font-mono">Mobile Access</div>
                         {qrDataUrl && (
-                            <img src={qrDataUrl} alt="Quick Join" className="w-32 h-32 mx-auto mix-blend-screen opacity-50 hover:opacity-100 transition-opacity" />
+                            <div className="relative inline-block">
+                                <img
+                                    src={qrDataUrl}
+                                    alt="Quick Join"
+                                    className="w-28 h-28 mx-auto opacity-60 hover:opacity-100 transition-opacity"
+                                />
+                                <div className="absolute inset-0 border border-gold/20" />
+                            </div>
                         )}
                     </div>
                 </div>

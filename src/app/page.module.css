@@ -5,6 +5,81 @@
   align-items: center;
   justify-content: center;
   padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Atmospheric Background */
+.backgroundLayer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.skyline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  opacity: 0.6;
+}
+
+.palmLeft {
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  width: 20%;
+  max-width: 200px;
+  opacity: 0.4;
+}
+
+.palmRight {
+  position: absolute;
+  bottom: 0;
+  right: -5%;
+  width: 20%;
+  max-width: 200px;
+  opacity: 0.4;
+}
+
+/* Ambient Glows */
+.glowOrb1 {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 42, 109, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: float 8s ease-in-out infinite;
+}
+
+.glowOrb2 {
+  position: absolute;
+  bottom: 20%;
+  right: 10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(5, 217, 232, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+.glowOrb3 {
+  position: absolute;
+  top: 40%;
+  right: 30%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 157, 0, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(50px);
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 2s;
 }
 
 .hero {
@@ -12,8 +87,10 @@
   flex-direction: column;
   align-items: center;
   gap: 48px;
-  max-width: 800px;
-  animation: fadeIn 0.6s ease forwards;
+  max-width: 900px;
+  animation: fadeIn 0.8s ease forwards;
+  position: relative;
+  z-index: 10;
 }
 
 .logoContainer {
@@ -24,40 +101,64 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  margin-bottom: 20px;
+  gap: 32px;
+  margin-bottom: 24px;
 }
 
 .icon {
-  font-size: 48px;
-  animation: float 3s ease-in-out infinite;
+  width: 80px;
+  height: 80px;
+  transition: all 0.3s ease;
 }
 
-.icon:last-child {
+.iconBanker {
+  color: #05d9e8;
+  filter: drop-shadow(0 0 15px #05d9e8) drop-shadow(0 0 30px #05d9e8);
+  animation: float 4s ease-in-out infinite;
+}
+
+.iconRobber {
+  color: #ff2a6d;
+  filter: drop-shadow(0 0 15px #ff2a6d) drop-shadow(0 0 30px #ff2a6d);
+  animation: float 4s ease-in-out infinite;
   animation-delay: 0.5s;
 }
 
 .vs {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: #ff9d00;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
+  text-shadow: 0 0 10px #ff9d00, 0 0 20px #ff9d00;
 }
 
 .title {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  line-height: 1.1;
 }
 
 .ampersand {
-  color: var(--text-muted);
+  color: #ff9d00;
   margin: 0 16px;
+  text-shadow: 0 0 20px #ff9d00;
 }
 
 .tagline {
-  font-size: 18px;
-  color: var(--text-secondary);
-  font-weight: 500;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: #9d8cba;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: #5c4a72;
+  margin-top: 12px;
+  letter-spacing: 2px;
 }
 
 .description {
@@ -68,72 +169,111 @@
 }
 
 .teamCard {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 28px;
+  background: linear-gradient(135deg, rgba(26, 10, 46, 0.8) 0%, rgba(13, 2, 33, 0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 32px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.teamCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  opacity: 0.5;
 }
 
 .teamCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
+}
+
+.teamCard:first-child {
+  color: #05d9e8;
 }
 
 .teamCard:first-child:hover {
-  border-color: var(--banker-blue);
-  box-shadow: var(--glow-blue);
+  border-color: #05d9e8;
+  box-shadow: 0 0 30px rgba(5, 217, 232, 0.2), inset 0 0 30px rgba(5, 217, 232, 0.05);
+}
+
+.teamCard:last-child {
+  color: #ff2a6d;
 }
 
 .teamCard:last-child:hover {
-  border-color: var(--crimson);
-  box-shadow: var(--glow-crimson);
+  border-color: #ff2a6d;
+  box-shadow: 0 0 30px rgba(255, 42, 109, 0.2), inset 0 0 30px rgba(255, 42, 109, 0.05);
 }
 
 .teamIcon {
-  font-size: 40px;
-  margin-bottom: 12px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  filter: drop-shadow(0 0 10px currentColor);
 }
 
 .teamCard h3 {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px currentColor;
 }
 
 .teamCard p {
-  color: var(--text-secondary);
+  color: #9d8cba;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-family: var(--font-mono);
 }
 
 .actionButtons {
   display: flex;
-  gap: 16px;
+  gap: 20px;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   width: 100%;
-  max-width: 400px;
-  padding: 32px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  animation: fadeIn 0.3s ease;
+  max-width: 420px;
+  padding: 40px;
+  background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(13, 2, 33, 0.95) 100%);
+  border: 1px solid rgba(255, 42, 109, 0.2);
+  backdrop-filter: blur(20px);
+  animation: fadeIn 0.4s ease;
+  position: relative;
+}
+
+.form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff2a6d, #ff9d00, #05d9e8);
 }
 
 .form h2 {
   text-align: center;
   margin-bottom: 8px;
+  color: #f0e6ff;
+  text-shadow: 0 0 20px rgba(255, 42, 109, 0.5);
 }
 
 .formButtons {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   margin-top: 8px;
 }
 
@@ -142,42 +282,51 @@
 }
 
 .error {
-  color: var(--crimson);
+  color: #ff2a6d;
   font-size: 14px;
   text-align: center;
-  padding: 8px;
-  background: rgba(220, 38, 38, 0.1);
-  border-radius: var(--radius-sm);
+  padding: 12px;
+  background: rgba(255, 42, 109, 0.1);
+  border: 1px solid rgba(255, 42, 109, 0.3);
+  font-family: var(--font-mono);
 }
 
 .footer {
   margin-top: auto;
   padding-top: 48px;
-  color: var(--text-muted);
+  color: #5c4a72;
   font-size: 14px;
+  font-family: var(--font-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 @keyframes float {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(0);
   }
-
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-15px);
   }
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px currentColor) drop-shadow(0 0 40px currentColor);
   }
 }
 
@@ -192,14 +341,28 @@
   }
 
   .iconRow {
-    gap: 16px;
+    gap: 20px;
   }
 
   .icon {
-    font-size: 36px;
+    width: 60px;
+    height: 60px;
   }
 
   .ampersand {
     margin: 0 8px;
+  }
+
+  .vs {
+    font-size: 18px;
+  }
+
+  .teamCard {
+    padding: 24px;
+  }
+
+  .palmLeft,
+  .palmRight {
+    display: none;
   }
 }
